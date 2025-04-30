@@ -94,6 +94,7 @@ jobs:
               -D"sonar.analysis.branch=${GITHUB_HEAD_REF}" \
               -D"sonar.analysis.pullRequest=${PR_NUMBER}" \
               -D"sonar.buildString=${PR_NUMBER}"
+              -D"sonar.qualitygate.wait=false"
           else
             # For branch pushes
             sonar-scanner \
