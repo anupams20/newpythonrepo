@@ -104,4 +104,5 @@ jobs:
               -D"sonar.token=${SONAR_TOKEN}" \
               -D"sonar.analysis.branch=${GITHUB_REF_NAME}" \
               -D"sonar.buildString=${GITHUB_RUN_ID}"
+              -D"sonar.qualitygate.wait=false"
           fi
