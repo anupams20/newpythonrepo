@@ -64,59 +64,59 @@ jobs:
         run: |
           poetry run pytest
 
-  # scan:
-  #   name: SonarQube
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  scan:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
-  #     - name: Set up Git
-  #       run: |
-  #         git config --global user.name "${{ env.GIT_USER_NAME }}"
-  #         git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+      - name: Set up Git
+        run: |
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
       
-  #     - name: Set up Python 3.11
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: '3.11'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       
-  #     - name: Download and install SonarQube Scanner
-  #       run: |
-  #         mkdir -p ${{ env.SONAR_SCANNER_HOME }}
-  #         curl -L -o sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux-x64.zip
-  #         unzip sonar-scanner-cli.zip -d ${{ env.SONAR_SCANNER_HOME }}
-  #         echo "${{ env.SONAR_SCANNER_HOME }}/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux-x64/bin" >> $GITHUB_PATH
+      - name: Download and install SonarQube Scanner
+        run: |
+          mkdir -p ${{ env.SONAR_SCANNER_HOME }}
+          curl -L -o sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux-x64.zip
+          unzip sonar-scanner-cli.zip -d ${{ env.SONAR_SCANNER_HOME }}
+          echo "${{ env.SONAR_SCANNER_HOME }}/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux-x64/bin" >> $GITHUB_PATH
       
-  #     - name: Run SonarQube Scanner
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-  #         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-  #       run: |
-  #         # Get PR number for pull request events
-  #         PR_NUMBER=${{ github.event.pull_request.number }}
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: |
+          # Get PR number for pull request events
+          PR_NUMBER=${{ github.event.pull_request.number }}
           
-  #         if [ -n "$PR_NUMBER" ]; then
-  #           # For pull requests
-  #           sonar-scanner \
-  #             -D"sonar.projectKey=${SONAR_PROJECT_KEY}" \
-  #             -D"sonar.sources=." \
-  #             -D"sonar.host.url=${SONAR_HOST_URL}" \
-  #             -D"sonar.token=${SONAR_TOKEN}" \
-  #             -D"sonar.analysis.branch=${GITHUB_HEAD_REF}" \
-  #             -D"sonar.analysis.pullRequest=${PR_NUMBER}" \
-  #             -D"sonar.buildString=${PR_NUMBER}" \
-  #             -D"sonar.qualitygate.wait=false"
-  #         else
-  #           # For branch pushes
-  #           sonar-scanner \
-  #             -D"sonar.projectKey=${SONAR_PROJECT_KEY}" \
-  #             -D"sonar.sources=." \
-  #             -D"sonar.host.url=${SONAR_HOST_URL}" \
-  #             -D"sonar.token=${SONAR_TOKEN}" \
-  #             -D"sonar.analysis.branch=${GITHUB_REF_NAME}" \
-  #             -D"sonar.buildString=${GITHUB_RUN_ID}" \
-  #             -D"sonar.qualitygate.wait=false"
-  #         fi
+          if [ -n "$PR_NUMBER" ]; then
+            # For pull requests
+            sonar-scanner \
+              -D"sonar.projectKey=${SONAR_PROJECT_KEY}" \
+              -D"sonar.sources=." \
+              -D"sonar.host.url=${SONAR_HOST_URL}" \
+              -D"sonar.token=${SONAR_TOKEN}" \
+              -D"sonar.analysis.branch=${GITHUB_HEAD_REF}" \
+              -D"sonar.analysis.pullRequest=${PR_NUMBER}" \
+              -D"sonar.buildString=${PR_NUMBER}" \
+              -D"sonar.qualitygate.wait=false"
+          else
+            # For branch pushes
+            sonar-scanner \
+              -D"sonar.projectKey=${SONAR_PROJECT_KEY}" \
+              -D"sonar.sources=." \
+              -D"sonar.host.url=${SONAR_HOST_URL}" \
+              -D"sonar.token=${SONAR_TOKEN}" \
+              -D"sonar.analysis.branch=${GITHUB_REF_NAME}" \
+              -D"sonar.buildString=${GITHUB_RUN_ID}" \
+              -D"sonar.qualitygate.wait=false"
+          fi
