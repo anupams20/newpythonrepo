@@ -9,10 +9,6 @@ on:
 env:
   SONAR_SCANNER_VERSION: "6.1.0.4477"
   SONAR_SCANNER_HOME: "${{ github.workspace }}/sonar-scanner"
-  GIT_USER_NAME: "CI BOT"
-  GIT_USER_EMAIL: "ci-bot@beehyv.com"
-  # Poetry configuration (uncomment if needed)
-  # POETRY_VERSION_PART: ""
 
 jobs:
   test:
@@ -26,11 +22,6 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      # - name: Install Docker Compose
-      #   run: |
-      #     sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
-      #     sudo chmod +x /usr/local/bin/docker-compose
-      #     docker-compose version
       
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -50,16 +41,7 @@ jobs:
         uses: falti/dotenv-action@v1
         with:
           path: .env
-      # - name: Start services using Docker Compose
-      #   run: |
-      #     docker-compose up -d
-      #     echo "Waiting for ClickHouse to be ready..."
-      #     until curl -s http://localhost:8123/ping | grep -q 'Ok'; do
-      #       echo "Waiting for ClickHouse..."
-      #       sleep 2
-      #     done
-      #     echo "ClickHouse is up."
-
+          
       - name: Run tests
         run: |
           poetry run pytest
@@ -71,11 +53,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
-      # - name: Set up Git
-      #   run: |
-      #     git config --global user.name "${{ env.GIT_USER_NAME }}"
-      #     git config --global user.email "${{ env.GIT_USER_EMAIL }}"
       
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
