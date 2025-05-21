@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [$default_branch]
+    branches: [$default-branch]
   pull_request:
-    branches: [$default_branch]
+    branches: [$default-branch]
 
 env:
   SONAR_SCANNER_VERSION: "6.1.0.4477"
