@@ -13,44 +13,44 @@ env:
   POETRY_VERSION: '1.8.0'
 
 jobs:
-  # run-tests:
-  #   name: Run Python Tests
-  #   runs-on: self-hosted
-  #   steps:
-  #     - uses: actions/checkout@v3
+  run-tests:
+    name: Run Python Tests
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: ${{ env.PYTHON_VERSION }}
-  #         cache: 'poetry'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'poetry'
 
-  #     - name: Install Poetry
-  #       uses: snok/install-poetry@v1
-  #       with:
-  #         version: ${{ env.POETRY_VERSION }}
-  #         virtualenvs-create: true
-  #         virtualenvs-in-project: true
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
-  #     - name: Cache Poetry dependencies
-  #       id: poetry-cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           .venv
-  #           ~/.cache/pypoetry
-  #         key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-poetry-
+      - name: Cache Poetry dependencies
+        id: poetry-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .venv
+            ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
 
-  #     - name: Install dependencies
-  #       if: steps.poetry-cache.outputs.cache-hit != 'true'
-  #       run: poetry install --no-interaction --no-ansi
+      - name: Install dependencies
+        if: steps.poetry-cache.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-ansi
 
-  #     - name: Run tests
-  #       run: |
-  #         source .env
-  #         poetry run pytest
+      - name: Run tests
+        run: |
+          source .env
+          poetry run pytest
 
   scan:
     name: SonarQube
@@ -79,13 +79,13 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
+          # PR_NUMBER=${{ github.event.pull_request.number }}
           COMMON_ARGS="-Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=. -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_TOKEN} -Dsonar.qualitygate.wait=false"
-          if [ -n "$PR_NUMBER" ]; then
-            sonar-scanner ${COMMON_ARGS} -Dsonar.analysis.branch=${GITHUB_HEAD_REF} -Dsonar.analysis.pullRequest=${PR_NUMBER} -Dsonar.buildString=${PR_NUMBER}
-          else
+          # if [ -n "$PR_NUMBER" ]; then
+          sonar-scanner ${COMMON_ARGS} -Dsonar.analysis.branch=${GITHUB_HEAD_REF} -Dsonar.analysis.pullRequest=${PR_NUMBER} -Dsonar.buildString=${PR_NUMBER}
+          # else
             sonar-scanner ${COMMON_ARGS} -Dsonar.analysis.branch=${GITHUB_REF_NAME} -Dsonar.buildString=${GITHUB_RUN_ID}
-          fi
+          # fi
   # docker-build-push:
   #   name: Build and Push Docker Images
   #   runs-on: ubuntu-latest
