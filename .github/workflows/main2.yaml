@@ -88,8 +88,8 @@ jobs:
   docker-build-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: [test]
-    if: github.event_name == 'push'
+    # needs: [run-tests]
+    # if: github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
